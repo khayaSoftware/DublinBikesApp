@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Dublin Bike App</title>
+</head>
+<body>
+    <div>
+        <h2>Dublin Bikes</h2>
+        <div id="bikes" />
+    </div>
+    <div>
+        <h2>Search by Bike Number</h2>
+        <input type="text" id="bikeId" size="5" />
+        <input type="button" value="search" onclick="find();" />
+        <p id="bike" />
+    </div>
+
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script>
+        var uri = 'api/bikes';
+        console.log(uri);
+        $(document).ready(function () {
+            $.getJSON(uri)
+                .done(function (data) {
+                    $.each(data, function (key, item) {
+                        $('<ul>').appendTo($('#bikes'));
+                            $('<li>', { text: "Address: " + item.address }).appendTo($('#bikes'));
+                            $('<li>', { text: "Status: " + item.status }).appendTo($('#bikes'));
+                            $('<li>', { text: "Available Bike Stands: " + item.available_bike_stands }).appendTo($('#bikes'));
+                            $('<li>', { text: "Available Bikes: " + item.available_bikes }).appendTo($('#bikes'));
+                        $('</ul>').appendTo($('#bikes'));
+                    });
+                });
+        });
+
+        function formatItem(item) {
+            return 'Adress: ' + item.address;
+        }
+
+        function find() {
+            var id = $('#bikeId').val();
+            $.getJSON(uri + '/' + id)
+                .done(function (data) {
+                    $('#bike').text(formatItem(data));
+                })
+                .fail(function (jqXHR, textStatus, err) {
+                    $('#bike').text('Error: ' + err);
+                });
+        }
+    </script>
+</body>
+</html>
